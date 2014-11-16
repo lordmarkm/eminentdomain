@@ -1,0 +1,10 @@
+html {
+  overflow-y: scroll;
+}
+.pointer {
+  cursor: pointer;
+  cursor: hand;
+}
+.mt10 {
+  margin-top: 10px;
+}

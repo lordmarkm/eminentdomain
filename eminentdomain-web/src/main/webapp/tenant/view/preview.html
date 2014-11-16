@@ -1,0 +1,127 @@
+<div class="panel panel-default" style="margin-top:10px;">
+  <div class="panel-heading">Tenant/Record Info</div>
+  <div class="panel-body">
+    <div class="col-sm-6">
+      <dl class="dl-horizontal">
+        <dt>Name
+        <dd>{{tenant.name}}
+        <dt>Keyword
+        <dd>{{tenant.keyword}}
+      </dl>
+    </div>
+    <div class="col-sm-6" ng-if="tenantRecord">
+      <dl class="dl-horizontal">
+        <dt>Customer Name
+        <dd>{{tenantRecord.customerName}}
+        <dt>Transaction type
+        <dd>{{tenantRecord.transactionType}}
+        <dt>Query method
+        <dd>Send <strong>{{tenant.keyword}} {{tenantRecord.trackingNo}}</strong> to <strong>292902274</strong>
+        <dt style="margin-top: 5px;">Record status
+        <dd style="margin-top: 5px;"><select ng-model="tenantRecord.status" 
+                ng-options="template as template.status for template in templates track by template.status"
+                ng-change="saveRecord(tenantRecord)"
+                class="form-control" style="width: 50%;"></select>
+      </dl>
+    </div>
+  </div>
+  <div class="panel-heading">Customer preview</div>
+  <div class="panel-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th style="text-align: left;">Template code
+          <th style="text-align: left;">Preview
+          <th style="text-align: left;">Length (must be &lt; 160)
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="preview in previews" ng-class="{success: preview.active}">
+          <td>{{preview.template.status}}
+          <td>{{preview.preview}} This msg is free.
+          <td ng-init="msglen = preview.preview.length + ' This msg is free.'.length"
+           ng-class="{danger: msglen > 160}">{{msglen}}
+        </tr>
+        <tr ng-if="!previews.length">
+          <td colspan="2">This tenant doesn't have any templates</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <button ng-click="showAdvanced = !showAdvanced" style="font-family: monospace;" ng-init="showAdvanced = false" class="btn btn-default btn-xs">
+      <span ng-if="showAdvanced">[-]</span>
+      <span ng-if="!showAdvanced">[+]</span>
+      Advanced
+    </button>
+
+    <div ng-show="!showAdvanced" class="text-right" style="margin-top: 10px;">
+      <button ui-sref="home({tenantIndex: tenantIndex})" class="btn btn-default">Done</button>
+    </div>
+  </div>
+
+
+  <!-- Save/update broadcast number -->
+  <div ng-show="showAdvanced" class="panel-heading">Save/update broadcast number</div>
+  <div ng-show="showAdvanced" class="panel-body">
+    <form name="broadcastNoForm" id="broadcastNoForm" ng-submit="saveBroadcastNo(broadcastNoForm.$valid)" class="form form-horizontal">
+      <label class="sr-only control-label">Broadcast No.</label>
+      <div class="col-sm-4">
+        <input type="text" ng-model="broadcastNo" ng-pattern="mobileNoPattern" placeholder="Broadcast number" class="form-control" required />
+      </div>
+      <button class="btn btn-success">Save</button>
+      <small class="help-block" style="margin-left: 13px;">12 digits 63xxx format; e.g 639155411987</small>
+    </form>
+  </div>
+
+
+  <!-- Customer variables -->
+  <div ng-show="showAdvanced" class="panel-heading">Customer variables</div>
+  <div ng-show="showAdvanced" class="panel-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Variable key
+          <th>Value
+          <th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="variable in tenantVariables">
+          <td>{{variable.key}}
+          <td>{{getRecordVariable(variable.key).value === '' ? '' : getRecordVariable(variable.key).value || variable.value + ' (default)'}}
+          <td>
+            <button ng-click="updateVariable(variable)" class="btn btn-xs btn-default">Edit</button>
+            <button ng-click="clearVariable(variable)" class="btn btn-xs btn-danger">Use default</button>
+          </td>
+        </tr>
+        <tr ng-if="!tenantVariables.length">
+          <td colspan="3">No variables to be defined</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="text-right" style="margin-top: 10px;">
+      <button ui-sref="home({tenantIndex: tenantIndex})" class="btn btn-default">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modals -->
+<script type="text/ng-template" id="modal-assign-variable">
+  <div class="modal-header modal-primary">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h3 class="modal-title">Update variable value</h3>
+  </div>
+  <form ng-submit="confirm()" class="form form-inline">
+  <div class="modal-body">
+      <div class="form-group">
+        <label for="variableValue" class="control-label" style="margin-right: 5px;"><strong>{{variable.key}}</strong></label>
+        <input type="text" ng-model="variableValue.value" class="form-control" id="variableValue" placeholder="{{variable.value}}">
+      </div>
+      <span ng-click="variableValue.value = ''" class="btn btn-default">Clear</span>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-s-xs btn-success">Update</button>
+    <span class="btn btn-default btn-s-xs" ng-click="close()">Cancel</span>
+  </div>
+  </form>
+</script>

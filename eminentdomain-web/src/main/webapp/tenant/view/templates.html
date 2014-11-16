@@ -1,0 +1,87 @@
+<div class="panel panel-default">
+
+
+<div class="panel-heading">Business Info</div>
+<div class="panel-body">
+  <div class="col-sm-6">
+    <dl class="dl-horizontal">
+      <dt>Name
+      <dd>{{tenant.name}}
+      <dt>Keyword
+      <dd>{{tenant.keyword}}
+    </dl>
+  </div>
+</div>
+
+<div class="panel-heading">Edit templates</div>
+<div class="panel-body">
+
+<div class="row">
+  <form ng-submit="saveTemplate()" class="form form-inline">
+    <div class="form-group col-sm-2">
+      <label class="sr-only" for="status">Status</label>
+      <input type="text" ng-model="template.status" required class="form-control" id="status" placeholder="Status">
+    </div>
+    <div class="form-group col-sm-6">
+      <label class="sr-only" for="templateString">Template String</label>
+      <input type="text" ng-model="template.templateString" required class="form-control" id="templateString"
+        placeholder="Template String" style="width: 100%; margin-left: 10px;">
+    </div>
+    <button type="submit"
+      ng-disabled="!template.id && findTemplateByStatus(template.status)"
+      class="btn" ng-class="template.id ? 'btn-success' : 'btn-primary'">
+      <span ng-if="!template.id">Add new template</span>
+      <span ng-if="template.id">Update template</span>
+    </button>
+    <span ng-click="clearTemplate()" class="btn btn-default">Clear</span>
+  </form>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Status
+      <th>Template
+      <th>Length
+      <th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="template in templates">
+      <td>{{template.status}}
+      <td>{{template.templateString}}
+      <td>{{template.templateString.length}}
+      <td nowrap="nowrap">
+        <button ng-click="editTemplate(template)" class="btn-default btn-xs">Edit</button>
+        <button ng-click="deleteTemplate(template)" class="btn-danger btn-xs">Delete</button>
+      </td>
+    </tr>
+    <tr ng-if="!templates.length">
+      <td colspan="4">No templates available</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="text-right">
+  <button ui-sref="home({tenantIndex: tenantIndex})" class="btn btn-default">Done</button>
+</div>
+
+</div>
+</div>
+
+<ng-include src="'tenant/helpfiles/templates_help.html'"></ng-include>
+
+<!-- Modals -->
+<script type="text/ng-template" id="modal-delete-template">
+  <div class="modal-header modal-primary">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h3 class="modal-title">Delete template</h3>
+  </div>
+  <div class="modal-body">
+      Are you sure you want to delete the template with status <strong>{{toDelete.status}}</strong>? This cannot be undone.
+  </div>
+  <div class="modal-footer">
+    <span ng-click="confirm()" class="btn btn-danger btn-s-xs">Delete</span>
+    <span class="btn btn-default btn-s-xs" ng-click="close()">Cancel</span>
+  </div>
+</script>

@@ -6,7 +6,6 @@
     <artifactId>eminentdomain-root</artifactId>
     <version>1.0</version>
   </parent>
-  <groupId>eminentdomain-app</groupId>
   <artifactId>eminentdomain-app</artifactId>
   <name>Eminent Domain :: App</name>
 

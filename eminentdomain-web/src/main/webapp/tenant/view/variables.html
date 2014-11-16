@@ -1,0 +1,84 @@
+<div class="panel panel-default">
+<div class="panel-heading">Business Info</div>
+<div class="panel-body">
+  <div class="col-sm-6">
+    <dl class="dl-horizontal">
+      <dt>Name
+      <dd>{{tenant.name}}
+      <dt>Keyword
+      <dd>{{tenant.keyword}}
+    </dl>
+  </div>
+</div>
+
+<div class="panel-heading">Edit variables</div>
+<div class="panel-body">
+
+<div class="row">
+  <form ng-submit="saveVariable()" class="form form-inline">
+    <div class="form-group col-sm-2">
+      <label class="sr-only" for="status">Key</label>
+      <input type="text" ng-model="variable.key" required class="form-control" id="status" placeholder="Key">
+    </div>
+    <div class="form-group col-sm-6">
+      <label class="sr-only" for="value">Default value</label>
+      <input type="text" ng-model="variable.value" required class="form-control" id="value"
+        placeholder="Default value" style="width: 100%; margin-left: 10px;">
+    </div>
+    <button type="submit"
+      ng-disabled="!variable.id && findVariableByKey(variable.key)"
+      class="btn" ng-class="variable.id ? 'btn-success' : 'btn-primary'">
+      <span ng-if="!variable.id">Create new variable</span>
+      <span ng-if="variable.id">Update variable</span>
+    </button>
+    <span ng-click="clearVariable()" class="btn btn-default">Clear</span>
+  </form>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Key
+      <th>Default value
+      <th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="variable in variables">
+      <td>{{variable.key}}
+      <td>{{variable.value}}
+      <td nowrap="nowrap">
+        <button ng-click="editVariable(variable)" class="btn-default btn-xs">Edit</button>
+        <button ng-click="deleteVariable(variable)" class="btn-danger btn-xs">Delete</button>
+      </td>
+    </tr>
+    <tr ng-if="!variables.length">
+      <td colspan="3">No variables available</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="text-right">
+  <button ui-sref="home({tenantIndex: tenantIndex})" class="btn btn-default">Done</button>
+</div>
+
+</div>
+</div>
+
+<ng-include src="'tenant/helpfiles/variables_help.html'"></ng-include>
+
+<!-- Modals -->
+<script type="text/ng-template" id="modal-delete-variable">
+  <div class="modal-header modal-primary">
+    <button type="button" class="close" ng-click="close()">&times;</button>
+    <h3 class="modal-title">Delete variable</h3>
+  </div>
+  <div class="modal-body">
+      Are you sure you want to delete the variable with key <strong>{{toDelete.key}}</strong>? This cannot be undone. Customer records
+      using this variable will retain its custom value unless you delete them individually.
+  </div>
+  <div class="modal-footer">
+    <span ng-click="confirm()" class="btn btn-danger btn-s-xs">Delete</span>
+    <span class="btn btn-default btn-s-xs" ng-click="close()">Cancel</span>
+  </div>
+</script>
